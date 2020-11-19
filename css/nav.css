@@ -17,6 +17,11 @@ nav {
   margin: 0 3px;
 }
 
+.main-nav-links a:before {
+  content: " | ";    
+  padding: 0 5px;
+}
+
 .nav-right {
   margin-left: auto;
   text-align: right;

@@ -75,7 +75,6 @@ class StoryList {
       token: user.loginToken,
       story: newStory,
     });
-    // response.data.story is the data response
     // console.log(response);
     let { title, author, url, username, storyId, createdAt } = response.data.story;
     let addedStory = new Story({
@@ -86,6 +85,8 @@ class StoryList {
       storyId,
       createdAt,
     });
+    //new story added to front of array
+    this.stories.unshift(addedStory);
     // console.log(addedStory);
     return addedStory;
   }

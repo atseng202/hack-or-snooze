@@ -106,6 +106,14 @@ form > hr {
   width: 70px;
 }
 
+.new-story-input label {
+  width: 70px;
+}
+
+#new-story-form button {
+  width: 4rem;
+  margin-left: 80px;
+}
 
 /* responsive queries for tightening things up for mobile. */
 

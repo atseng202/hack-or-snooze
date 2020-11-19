@@ -37,6 +37,12 @@
   <div class="navbar-brand">
     <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
   </div>
+  <!-- TODO: Reevaluate need for ids -->
+  <div class="main-nav-links hidden">
+    <a class="nav-link" href="#" id="nav-submit">submit</a>
+    <a class="nav-link" href="#" id="nav-favorites">favorites</a>
+    <a class="nav-link" href="#" id="nav-my-stories">my stories</a>
+  </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
     <a class="nav-link" href="#" id="nav-user-profile"></a>
@@ -46,7 +52,23 @@
 
 <!-- area for stories (all stories, user stories, favorites) -->
 <section class="stories-container container">
-
+  <!-- New story form -->
+  <form action class="hidden" id="new-story-form">
+    <div class="new-story-input">
+      <label for="author">author</label>
+      <input id="author" type="text" placeholder="author name">
+    </div>
+    <div class="new-story-input">
+      <label for="title">title</label>
+      <input id="title" type="text" placeholder="story title">
+    </div>
+    <div class="new-story-input">
+      <label for="url">url</label>
+      <input id="url" type="text" placeholder="story url">
+    </div>
+    <button type="submit">submit</button>
+    <hr>
+  </form>
   <!-- loading message (removed by JS after stories loaded) -->
   <div id="stories-loading-msg">Loading&hellip;</div>
 
