@@ -24,7 +24,7 @@ function generateStoryMarkup(story) {
   let isFavorite = currentUser.includesFavorite(story);
   // debugger;
   return $(`
-  <li id="${story.storyId}" data-favorite="${isFavorite ? "yes" : "no"}">
+  <li id="${story.storyId}">
   <i class="fa${isFavorite ? "s" : "r"} fa-star"></i>
   <a href="${story.url}" target="a_blank" class="story-link">
   ${story.title}
@@ -75,8 +75,7 @@ async function addNewStoryAndUpdatePage(evt){
   putStoriesOnPage(); 
 }
 
-/* Get list of favorite stories from server API, generates their API, and
- * puts them on page
+/* Get list of favorite stories from the user and puts them on page
  */
 function putFavoritesOnPage() {
   console.debug("putFavoritesOnPage");
@@ -86,6 +85,8 @@ function putFavoritesOnPage() {
     const $story = generateStoryMarkup(story);
     $allFavoritesList.append($story);
   }
+  
+  //TODO: show a message for empty favorites
 
   $allFavoritesList.show();
 }
@@ -98,23 +99,26 @@ function putFavoritesOnPage() {
  async function toggleFavoriteStory(evt) {
    console.debug("toggleFavoriteStory");
    // grab the target storyId to "favorite" it
-   let $storyItem = $(evt.target).parent();
+   let $storyItem = $(evt.target).closest('li');
+   let $favoritedStoryIcon = $(evt.target);
    let storyId = $storyItem.attr("id");
-   let isFavorite = $storyItem.attr("data-favorite") === "yes";
+   let story = storyList.stories.find(s => s.storyId === storyId);
+
+   let isFavorite = $favoritedStoryIcon.hasClass('fas');
    // either favorite or un-favorite story, depending on if 
    // it was previously favorited
    if (!isFavorite) {
-     await currentUser.addFavorite(storyId);
+     await currentUser.addFavorite(story);
    } else {
-     await currentUser.removeFavorite(storyId);
+     await currentUser.removeFavorite(story);
    }
    isFavorite = !isFavorite;
    // update the DOM by updating the current story on DOM with 
    // correct Font Awesome icon
-   let $newlyFavoritedStoryIcon = $(evt.target);
-   $newlyFavoritedStoryIcon.attr("class", `fa${isFavorite ? "s" : "r"} fa-star`);
-   // also update data-attribute of story item
-   $storyItem.attr("data-favorite", `${isFavorite ? "yes" : "no"}`)
+
+   $favoritedStoryIcon.toggleClass("fas far");
+  //  // also update data-attribute of story item
+  //  $storyItem.attr("data-favorite", `${isFavorite ? "yes" : "no"}`)
  }
 
  $allStoriesList.on("click", ".fa-star", toggleFavoriteStory);

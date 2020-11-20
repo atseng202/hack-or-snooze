@@ -167,35 +167,33 @@ class User {
   /* function adds a new favorite for the user by POSTing to the server 
    * required: a storyId (from the story), the user token, username
    */
-  async addFavorite(storyId) {
-    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${storyId}`;
-    const response = await axios.post(
-      favoritesUrl, 
-      {token: this.loginToken }
-    );
+  async addFavorite(story) {
+    await this._addOrRemove(true, story);
 
-    let favoritedData = response.data.user.favorites;
-    // was wondering if this is inefficient, similar to clearing DOM and re-adding 
-    // all the story list items again
-    this.favorites = favoritedData.map(s => new Story(s));
-    
+    this.favorites.push(story);    
   }
 
   /* function removes a favorite for the user by POSTing to the server 
    * required: a storyId (from the story), the user token, username
    */
-  async removeFavorite(storyId) {
-    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${storyId}`;
-    const response = await axios({
-      url: favoritesUrl,
-      method: "DELETE", 
-      data: {token: this.loginToken }
-    });
+  async removeFavorite(story) {
+    await this._addOrRemove(false, story);
 
-    let favoritedData = response.data.user.favorites;
-    this.favorites = favoritedData.map(s => new Story(s));
+    this.favorites = this.favorites.filter(s => s.storyId!==story.storyId);
   }
 
+  /* Helper function to determine to add or remove favorites */
+
+  async _addOrRemove(toBeFavorited, story){
+    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`;
+    let method = (toBeFavorited)? "POST" : "DELETE";
+
+    await axios({
+      url: favoritesUrl,
+      method, 
+      data: {token: this.loginToken }
+    });
+  }
 
   /* function checks if a story is in the user's current favorites array */
   includesFavorite(story) {
