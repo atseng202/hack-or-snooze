@@ -181,10 +181,23 @@ class User {
     
   }
 
-  /* TODO: Delete a previously favorited story */
+  /* function removes a favorite for the user by POSTing to the server 
+   * required: a storyId (from the story), the user token, username
+   */
+  async removeFavorite(storyId) {
+    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${storyId}`;
+    const response = await axios({
+      url: favoritesUrl,
+      method: "DELETE", 
+      data: {token: this.loginToken }
+    });
+
+    let favoritedData = response.data.user.favorites;
+    this.favorites = favoritedData.map(s => new Story(s));
+  }
 
 
-  /* TODO: trying to check if a story in the user's current favorites */
+  /* function checks if a story is in the user's current favorites array */
   includesFavorite(story) {
     for (let favStory of this.favorites)  {
       if (favStory.storyId === story.storyId) {

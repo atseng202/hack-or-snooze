@@ -99,7 +99,6 @@ function putFavoritesOnPage() {
    console.debug("toggleFavoriteStory");
    // grab the target storyId to "favorite" it
    let $storyItem = $(evt.target).parent();
-  //  debugger;
    let storyId = $storyItem.attr("id");
    let isFavorite = $storyItem.attr("data-favorite") === "yes";
    // either favorite or un-favorite story, depending on if 
@@ -107,8 +106,7 @@ function putFavoritesOnPage() {
    if (!isFavorite) {
      await currentUser.addFavorite(storyId);
    } else {
-     // TODO: call backend to un-favorite story
-
+     await currentUser.removeFavorite(storyId);
    }
    isFavorite = !isFavorite;
    // update the DOM by updating the current story on DOM with 
@@ -119,4 +117,5 @@ function putFavoritesOnPage() {
    $storyItem.attr("data-favorite", `${isFavorite ? "yes" : "no"}`)
  }
 
- $("#all-stories-list").on("click", ".fa-star", toggleFavoriteStory);
+ $allStoriesList.on("click", ".fa-star", toggleFavoriteStory);
+ $allFavoritesList.on("click", ".fa-star", toggleFavoriteStory);
