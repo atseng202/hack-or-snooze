@@ -56,15 +56,15 @@
   <form action class="hidden" id="new-story-form">
     <div class="new-story-input">
       <label for="author">author</label>
-      <input id="author" type="text" placeholder="author name">
+      <input id="create-author" type="text" placeholder="author name">
     </div>
     <div class="new-story-input">
       <label for="title">title</label>
-      <input id="title" type="text" placeholder="story title">
+      <input id="create-title" type="text" placeholder="story title">
     </div>
     <div class="new-story-input">
       <label for="url">url</label>
-      <input id="url" type="text" placeholder="story url">
+      <input id="create-url" type="text" placeholder="story url">
     </div>
     <button type="submit">submit</button>
     <hr>
@@ -79,6 +79,9 @@
   <div class="hidden" id="no-favorites-msg">You have no favorites!</div>
   <ol id="favorite-stories-list" class="stories-list"></ol>
 
+  <!-- List of my stories -->
+  <div class="hidden" id="no-my-stories-msg">You have no stories!</div>
+  <ol id="my-stories-list" class="stories-list"></ol>  
 </section>
 
 <!-- Login and signup forms -->

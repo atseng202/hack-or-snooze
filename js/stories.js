@@ -21,7 +21,10 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
   
   const hostName = story.getHostName();
-  let isFavorite = currentUser.includesFavorite(story);
+  let isFavorite = false;
+  if(currentUser){
+    isFavorite = currentUser.includesFavorite(story);
+  }
   // debugger;
   return $(`
   <li id="${story.storyId}">
@@ -52,27 +55,26 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
-$newStoryForm.on("submit", addNewStoryAndUpdatePage);
+$newStoryForm.on("submit", addNewStory);
 
 /*
  * function to get new story from submitted form inputs 
- * TODO: Change function name, avoid using and
  */
 
-async function addNewStoryAndUpdatePage(evt){
-  console.debug("addNewStoryAndUpdatePage");
+async function addNewStory(evt){
+  console.debug("addNewStory");
 
   evt.preventDefault();
-  // TODO: Change ids to newAuthor, newTitle etc.
-  const author = $('#author').val();
-  const title = $('#title').val();
-  const url = $('#url').val();
+  const author = $('#create-author').val();
+  const title = $('#create-title').val();
+  const url = $('#create-url').val();
   // we didn't use the story instance here because we updated the stories array in addStory
   const storyData = { author, title, url };
-  await storyList.addStory(currentUser, storyData);
-  // TODO: don't recreate markup from scratch, just prepend story to beginning of story list
+  const story = await storyList.addStory(currentUser, storyData);
+  const $story = generateStoryMarkup(story);
+
   $newStoryForm.hide();
-  putStoriesOnPage(); 
+  $allStoriesList.prepend($story);
 }
 
 /* Get list of favorite stories from the user and puts them on page

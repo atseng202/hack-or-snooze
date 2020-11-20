@@ -43,9 +43,11 @@ function updateNavOnLogin() {
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
+$navFavorites.on("click", navFavoritesClick);
+
 /*
  * Show section for favorited stories on click of "favorites" link 
- * Also hide storiesList, login/signup forms, submit form
+ * Also hide storiesList, login/signup forms, submit form, etc.
  * 
  */
 
@@ -55,4 +57,16 @@ function navFavoritesClick(evt) {
   putFavoritesOnPage();
 }
 
-$navFavorites.on("click", navFavoritesClick);
+$navMyStories.on("click", navMyStoriesClick);
+
+/*
+ * Show section for my stories on click of "my stories" link 
+ * Also hide storiesList, login/signup forms, submit form, etc.
+ * 
+ */
+
+function navMyStoriesClick(evt) {
+  console.debug("navMyStoriesClick", evt)
+  hidePageComponents();
+  putMyStoriesOnPage();
+}
