@@ -169,7 +169,8 @@ function putFavoritesOnPage() {
     const storyId = $story.attr('id');
     
     await currentUser.removeMyStory(storyId);
-    storyList.stories = storyList.stories.filter(s => s.storyId !== storyId);
+    // updates the list of stories after removing story instance from server
+    storyList.removeStory(storyId);
 
     $story.remove();
    }
