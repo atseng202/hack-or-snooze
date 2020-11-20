@@ -36,3 +36,12 @@
 .story-user {
   display: block;
 }
+
+.fa-star:hover {
+  cursor:pointer;
+}
+
+.fa-trash-alt:hover {
+  background-color: red;
+  cursor: pointer;
+}

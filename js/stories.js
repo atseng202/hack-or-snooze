@@ -23,7 +23,7 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   let isFavorite = false;
   if(currentUser){
-    isFavorite = currentUser.includesFavorite(story);
+    isFavorite = currentUser.includes(currentUser.favorites, story);
   }
   // debugger;
   return $(`
@@ -104,7 +104,7 @@ function putFavoritesOnPage() {
  */
 
  async function toggleFavoriteStory(evt) {
-   console.debug("toggleFavoriteStory");
+   console.debug("toggleFavoriteStory", evt);
    // grab the target storyId to "favorite" it
    let $storyItem = $(evt.target).closest('li');
    let $favoritedStoryIcon = $(evt.target);
@@ -130,7 +130,11 @@ function putFavoritesOnPage() {
 
  $allStoriesList.on("click", ".fa-star", toggleFavoriteStory);
  $allFavoritesList.on("click", ".fa-star", toggleFavoriteStory);
+ $allMyStoriesList.on("click", ".fa-star", toggleFavoriteStory);
+
  // TODO: Get a trash icon from Font Awesome and add this click handler for my stories
+ $allMyStoriesList.on("click", ".fa-trash-alt", deleteStory);
+
 
  /* Function gets list of current user's own stories and puts them on page
   *
@@ -142,6 +146,7 @@ function putFavoritesOnPage() {
 
     for (let story of currentUser.ownStories) {
       const $story = generateStoryMarkup(story);
+      $story.prepend(`<i class="fas fa-trash-alt"></i>`);
       $allMyStoriesList.append($story);
     }
 
@@ -150,3 +155,11 @@ function putFavoritesOnPage() {
     
     $allMyStoriesList.show();
   }
+
+  /** Function deletes the story from server
+   *  and should remove from DOM too
+   */  
+
+   async function deleteStory(evt) {
+     console.debug("deleteStory", evt);
+   }

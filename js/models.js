@@ -98,7 +98,7 @@ class User {
    */
 
   constructor(
-    { username, name, createdAt, favorites = [], ownStories = [] },
+    { username, name, createdAt, favorites = [], stories = [] },
     token
   ) {
     this.username = username;
@@ -107,7 +107,7 @@ class User {
 
     // instantiate Story instances for the user's favorites and ownStories
     this.favorites = favorites.map((s) => new Story(s));
-    this.ownStories = ownStories.map((s) => new Story(s));
+    this.ownStories = stories.map((s) => new Story(s));
 
     // store the login token on the user so it's easy to find for API calls.
     this.loginToken = token;
@@ -196,9 +196,9 @@ class User {
   }
 
   /* function checks if a story is in the user's current favorites array */
-  includesFavorite(story) {
-    for (let favStory of this.favorites)  {
-      if (favStory.storyId === story.storyId) {
+  includes(inUserList, storyOfInterest) {
+    for (let story of inUserList)  {
+      if (storyOfInterest.storyId === story.storyId) {
         return true;
       }
     }
