@@ -10,7 +10,7 @@
   margin: 10px 0;
 }
 
-#stories-loading-msg, #no-favorites-msg {
+#stories-loading-msg, #no-favorites-msg, #no-my-stories-msg {
   font-weight: bold;
   font-size: 150%;
   margin: 20px 30px;

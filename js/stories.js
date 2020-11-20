@@ -132,7 +132,6 @@ function putFavoritesOnPage() {
  $allFavoritesList.on("click", ".fa-star", toggleFavoriteStory);
  $allMyStoriesList.on("click", ".fa-star", toggleFavoriteStory);
 
- // TODO: Get a trash icon from Font Awesome and add this click handler for my stories
  $allMyStoriesList.on("click", ".fa-trash-alt", deleteStory);
 
 
@@ -156,10 +155,17 @@ function putFavoritesOnPage() {
     $allMyStoriesList.show();
   }
 
-  /** Function deletes the story from server
-   *  and should remove from DOM too
+  /** Function deletes the story, updating this on both the server
+   *  and DOM 
    */  
 
    async function deleteStory(evt) {
-     console.debug("deleteStory", evt);
+    console.debug("deleteStory", evt);
+    const $story = $(evt.target).closest('li')
+    const storyId = $story.attr('id');
+    
+    await currentUser.removeMyStory(storyId);
+    storyList.stories = storyList.stories.filter(s => s.storyId !== storyId);
+
+    $story.remove();
    }

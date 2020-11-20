@@ -196,6 +196,7 @@ class User {
   }
 
   /* function checks if a story is in the user's current favorites array */
+  
   includes(inUserList, storyOfInterest) {
     for (let story of inUserList)  {
       if (storyOfInterest.storyId === story.storyId) {
@@ -203,6 +204,20 @@ class User {
       }
     }
     return false;
+  }
+
+  /* function removes selected story from the server */
+
+  async removeMyStory(storyId){
+    const myStoriesUrl = `${BASE_URL}/stories/${storyId}`;
+    
+    await axios({
+      url: myStoriesUrl,
+      method: "DELETE",
+      data: {token: this.loginToken}
+    });
+
+    this.ownStories = this.ownStories.filter(s => s.storyId !== storyId);
   }
 }
 
