@@ -10,12 +10,11 @@
   margin: 10px 0;
 }
 
-#stories-loading-msg {
+#stories-loading-msg, #no-favorites-msg {
   font-weight: bold;
   font-size: 150%;
   margin: 20px 30px;
 }
-
 
 /* Individual stories */
 

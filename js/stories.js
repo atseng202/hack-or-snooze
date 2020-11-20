@@ -86,7 +86,12 @@ function putFavoritesOnPage() {
     $allFavoritesList.append($story);
   }
   
-  //TODO: show a message for empty favorites
+  // If favorites array is empty append message to DOM
+  if(currentUser.favorites.length === 0){
+    $noFavoritesMsg.show();
+  } else {
+    $noFavoritesMsg.hide();
+  }
 
   $allFavoritesList.show();
 }
