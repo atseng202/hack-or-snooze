@@ -150,7 +150,11 @@ function putFavoritesOnPage() {
     }
 
     // if no stories written append message to DOM
-    (currentUser.ownStories.length === 0) ? $noMyStoriesMsg.show() :$noMyStoriesMsg.hide();
+    if(currentUser.ownStories.length === 0) {
+      $noMyStoriesMsg.show()
+    } else {
+      $noMyStoriesMsg.hide();
+    }
     
     $allMyStoriesList.show();
   }

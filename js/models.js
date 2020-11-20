@@ -81,6 +81,8 @@ class StoryList {
     //new story added to front of array
     this.stories.unshift(addedStory);
     // update user's own stories array
+
+    // TODO: move array mutation to user class
     user.ownStories.unshift(addedStory);
     // console.log(addedStory);
     return addedStory;
@@ -196,7 +198,7 @@ class User {
   }
 
   /* function checks if a story is in the user's current favorites array */
-  
+  //TODO update docstring with params
   includes(inUserList, storyOfInterest) {
     for (let story of inUserList)  {
       if (storyOfInterest.storyId === story.storyId) {
@@ -206,7 +208,9 @@ class User {
     return false;
   }
 
-  /* function removes selected story from the server */
+  /* function removes selected story from the server and frontend 
+  * params: storyId
+  */
 
   async removeMyStory(storyId){
     const myStoriesUrl = `${BASE_URL}/stories/${storyId}`;
