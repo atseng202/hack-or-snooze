@@ -21,8 +21,11 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
   
   const hostName = story.getHostName();
+  let isFavorite = currentUser.includesFavorite(story);
+  // debugger;
   return $(`
-  <li id="${story.storyId}">
+  <li id="${story.storyId}" data-favorite="${isFavorite ? "yes" : "no"}">
+  <i class="fa${isFavorite ? "s" : "r"} fa-star"></i>
   <a href="${story.url}" target="a_blank" class="story-link">
   ${story.title}
   </a>
@@ -33,7 +36,7 @@ function generateStoryMarkup(story) {
   `);
 }
 
-/** Gets list of stories from server, generates their HTML, and puts on page. */
+/** Gets list of stories from storyList instance, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
   console.debug("putStoriesOnPage");
@@ -51,14 +54,69 @@ function putStoriesOnPage() {
 
 $newStoryForm.on("submit", addNewStoryAndUpdatePage);
 
-/** function to get new story from submitted form inputs */
+/*
+ * function to get new story from submitted form inputs 
+ * TODO: Change function name, avoid using and
+ */
 
 async function addNewStoryAndUpdatePage(evt){
+  console.debug("addNewStoryAndUpdatePage");
+
   evt.preventDefault();
-  let author = $('#author').val();
-  let title = $('#title').val();
-  let url = $('#url').val();
-  await storyList.addStory(currentUser, {author, title, url});
+  // TODO: Change ids to newAuthor, newTitle etc.
+  const author = $('#author').val();
+  const title = $('#title').val();
+  const url = $('#url').val();
+  // we didn't use the story instance here because we updated the stories array in addStory
+  const storyData = { author, title, url };
+  await storyList.addStory(currentUser, storyData);
+  // TODO: don't recreate markup from scratch, just prepend story to beginning of story list
   $newStoryForm.hide();
   putStoriesOnPage(); 
 }
+
+/* Get list of favorite stories from server API, generates their API, and
+ * puts them on page
+ */
+function putFavoritesOnPage() {
+  console.debug("putFavoritesOnPage");
+  $allFavoritesList.empty();
+
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $allFavoritesList.append($story);
+  }
+
+  $allFavoritesList.show();
+}
+
+/* function "favorites" the clicked link by POSTing to server
+ * then updates the icon as favorited
+ * also places favorites on page
+ */
+
+ async function toggleFavoriteStory(evt) {
+   console.debug("toggleFavoriteStory");
+   // grab the target storyId to "favorite" it
+   let $storyItem = $(evt.target).parent();
+  //  debugger;
+   let storyId = $storyItem.attr("id");
+   let isFavorite = $storyItem.attr("data-favorite") === "yes";
+   // either favorite or un-favorite story, depending on if 
+   // it was previously favorited
+   if (!isFavorite) {
+     await currentUser.addFavorite(storyId);
+   } else {
+     // TODO: call backend to un-favorite story
+
+   }
+   isFavorite = !isFavorite;
+   // update the DOM by updating the current story on DOM with 
+   // correct Font Awesome icon
+   let $newlyFavoritedStoryIcon = $(evt.target);
+   $newlyFavoritedStoryIcon.attr("class", `fa${isFavorite ? "s" : "r"} fa-star`);
+   // also update data-attribute of story item
+   $storyItem.attr("data-favorite", `${isFavorite ? "yes" : "no"}`)
+ }
+
+ $("#all-stories-list").on("click", ".fa-star", toggleFavoriteStory);

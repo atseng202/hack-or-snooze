@@ -76,17 +76,12 @@ class StoryList {
       story: newStory,
     });
     // console.log(response);
-    let { title, author, url, username, storyId, createdAt } = response.data.story;
-    let addedStory = new Story({
-      title,
-      author,
-      url,
-      username,
-      storyId,
-      createdAt,
-    });
+    // let { title, author, url, username, storyId, createdAt } = response.data.story;
+    let addedStory = new Story(response.data.story);
     //new story added to front of array
     this.stories.unshift(addedStory);
+    // update user's own stories array
+    user.ownStories.unshift(addedStory);
     // console.log(addedStory);
     return addedStory;
   }
@@ -168,4 +163,35 @@ class User {
       return null;
     }
   }
+
+  /* function adds a new favorite for the user by POSTing to the server 
+   * required: a storyId (from the story), the user token, username
+   */
+  async addFavorite(storyId) {
+    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${storyId}`;
+    const response = await axios.post(
+      favoritesUrl, 
+      {token: this.loginToken }
+    );
+
+    let favoritedData = response.data.user.favorites;
+    // was wondering if this is inefficient, similar to clearing DOM and re-adding 
+    // all the story list items again
+    this.favorites = favoritedData.map(s => new Story(s));
+    
+  }
+
+  /* TODO: Delete a previously favorited story */
+
+
+  /* TODO: trying to check if a story in the user's current favorites */
+  includesFavorite(story) {
+    for (let favStory of this.favorites)  {
+      if (favStory.storyId === story.storyId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
+

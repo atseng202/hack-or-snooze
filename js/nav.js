@@ -42,3 +42,17 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+/*
+ * Show section for favorited stories on click of "favorites" link 
+ * Also hide storiesList, login/signup forms, submit form
+ * 
+ */
+
+function navFavoritesClick(evt) {
+  console.debug("navFavoritesClick", evt)
+  hidePageComponents();
+  putFavoritesOnPage();
+}
+
+$navFavorites.on("click", navFavoritesClick);
