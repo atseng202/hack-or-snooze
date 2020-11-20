@@ -68,11 +68,11 @@ async function addNewStory(evt){
   const author = $('#create-author').val();
   const title = $('#create-title').val();
   const url = $('#create-url').val();
-  // we didn't use the story instance here because we updated the stories array in addStory
+
+  // get HTML markup and add to front of all stories page
   const storyData = { author, title, url };
   const story = await storyList.addStory(currentUser, storyData);
   const $story = generateStoryMarkup(story);
-
   $newStoryForm.hide();
   $allStoriesList.prepend($story);
 }
@@ -130,3 +130,23 @@ function putFavoritesOnPage() {
 
  $allStoriesList.on("click", ".fa-star", toggleFavoriteStory);
  $allFavoritesList.on("click", ".fa-star", toggleFavoriteStory);
+ // TODO: Get a trash icon from Font Awesome and add this click handler for my stories
+
+ /* Function gets list of current user's own stories and puts them on page
+  *
+  */
+
+  function putMyStoriesOnPage() {
+    console.debug("putMyStoriesOnPage");
+    $allMyStoriesList.empty();
+
+    for (let story of currentUser.ownStories) {
+      const $story = generateStoryMarkup(story);
+      $allMyStoriesList.append($story);
+    }
+
+    // if no stories written append message to DOM
+    (currentUser.ownStories.length === 0) ? $noMyStoriesMsg.show() :$noMyStoriesMsg.hide();
+    
+    $allMyStoriesList.show();
+  }

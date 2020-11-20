@@ -62,7 +62,7 @@ $navMyStories.on("click", navMyStoriesClick);
 /*
  * Show section for my stories on click of "my stories" link 
  * Also hide storiesList, login/signup forms, submit form, etc.
- * 
+ * TODO: putMyStoriesOnPage not yet implemented
  */
 
 function navMyStoriesClick(evt) {
