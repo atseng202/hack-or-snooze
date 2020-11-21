@@ -1,3 +1,5 @@
+"use strict";
+
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 /******************************************************************************
  * Story: a single story in the system
@@ -86,12 +88,23 @@ class StoryList {
     return addedStory;
   }
 
-  /* function accepts a storyId String  
-   * It removes the story the id refers to from stories
-   */  
-  
-  removeStory(storyId) {
-    this.stories = this.stories.filter(s => s.storyId !== storyId);
+  /* function accepts a user instance and storyId String
+   * It removes the story from the server, and delegates user to remove 
+   * story from its ownStories array
+   */
+
+  async removeStory(user, storyId) {
+    const myStoriesUrl = `${BASE_URL}/stories/${storyId}`;
+
+    let response = await axios({
+      url: myStoriesUrl,
+      method: "DELETE",
+      data: { token: user.loginToken },
+    });
+
+    let removedStory = this.stories.find(s => s.storyId === storyId);
+    this.stories = this.stories.filter((s) => s.storyId !== storyId);
+    user.removeStory(removedStory);
   }
 }
 
@@ -126,6 +139,7 @@ class User {
    * - username: a new username
    * - password: a new password
    * - name: the user's full name
+   * - Delegating failed response error handling to whoever calls this function
    */
 
   static async signup(username, password, name) {
@@ -142,6 +156,7 @@ class User {
 
    * - username: an existing user's username
    * - password: an existing user's password
+   * - Delegating failed response error handling to whoever calls this function
    */
 
   static async login(username, password) {
@@ -175,28 +190,31 @@ class User {
   /* function adds a new favorite for the user by POSTing to the server
    * required: a storyId (from the story), the user token, username
    */
-  async addFavorite(story) {
-    await this._addOrRemove(true, story);
+  async addFavorite(storyId) {
+    let response = await this._addOrRemove(true, storyId);
 
-    this.favorites.push(story);
+    // response.data.user.favorites is an array of user favorites
+    let storyData = response.data.user.favorites.find( s => s.storyId === storyId);
+    let newFavStory = new Story(storyData);
+    this.favorites.push(newFavStory);
   }
 
   /* function removes a favorite for the user by POSTing to the server
-   * required: a storyId (from the story), the user token, username
+   * required: a storyId (from the storyId), the user token, username
    */
-  async removeFavorite(story) {
-    await this._addOrRemove(false, story);
+  async removeFavorite(storyId) {
+    await this._addOrRemove(false, storyId);
 
-    this.favorites = this.favorites.filter((s) => s.storyId !== story.storyId);
+    this.favorites = this.favorites.filter((s) => s.storyId !== storyId);
   }
 
   /* Helper function to determine to add or remove favorites */
 
-  async _addOrRemove(toBeFavorited, story) {
-    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`;
+  async _addOrRemove(toBeFavorited, storyId) {
+    const favoritesUrl = `${BASE_URL}/users/${this.username}/favorites/${storyId}`;
     let method = toBeFavorited ? "POST" : "DELETE";
 
-    await axios({
+    return await axios({
       url: favoritesUrl,
       method,
       data: { token: this.loginToken },
@@ -215,26 +233,16 @@ class User {
     return false;
   }
 
-  /* function removes selected story from the server and frontend
-   * params: storyId
+  /* function accepts a story and removes it from users ownStories array 
+   * params: story instance to delete
    */
-
-  async removeMyStory(storyId) {
-    const myStoriesUrl = `${BASE_URL}/stories/${storyId}`;
-
-    await axios({
-      url: myStoriesUrl,
-      method: "DELETE",
-      data: { token: this.loginToken },
-    });
-
-    this.ownStories = this.ownStories.filter((s) => s.storyId !== storyId);
+  removeStory(story) {
+    this.ownStories = this.ownStories.filter((s) => s.storyId !== story.storyId);    
   }
 
   /* function accepts a story instance
    * adds the story to the front of the user's ownStories list
    */
-
   addStory(story) {
     this.ownStories.unshift(story);
   }

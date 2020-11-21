@@ -1,6 +1,7 @@
+"use strict";
+
 // global to hold the User instance of the currently-logged-in user
 let currentUser;
-
 /******************************************************************************
  * User login/signup/login
  */
@@ -17,12 +18,20 @@ async function login(evt) {
 
   // User.login retrieves user info from API and returns User instance
   // which we'll make the globally-available, logged-in user.
-  currentUser = await User.login(username, password);
+  // Wrapping in try catch block to handle error messages
+  try {
+    currentUser = await User.login(username, password);
+    saveUserCredentialsInLocalStorage();
+    updateUIOnUserLogin();
+  } catch (error) {
+    let $errorMsg = $("#credential-errors-msg");
+    $errorMsg
+    .empty()
+    .show()
+    .text(error.response.data.error.message);
+  }
 
   $loginForm.trigger("reset");
-
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
 }
 
 $loginForm.on("submit", login);
@@ -39,11 +48,22 @@ async function signup(evt) {
 
   // User.signup retrieves user info from API and returns User instance
   // which we'll make the globally-available, logged-in user.
-  debugger
-  currentUser = await User.signup(username, password, name);
 
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
+  // TODO: catch error here isntead of in User model layer
+  try {
+    currentUser = await User.signup(username, password, name);
+    saveUserCredentialsInLocalStorage();
+    updateUIOnUserLogin();
+  } catch (error) {
+    // show UI signup errors here with error jquery element
+    let $errorMsg = $("#credential-errors-msg");
+    $errorMsg
+    .empty()
+    .show()
+    .text(error.response.data.error.message);
+  }
+
+  // currentUser = await User.signup(username, password, name);
 
   $signupForm.trigger("reset");
 }
@@ -109,7 +129,8 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
-  $allStoriesList.show();
-
-  updateNavOnLogin();
+  if (currentUser) {
+    $allStoriesList.show();
+    updateNavOnLogin();
+  }
 }

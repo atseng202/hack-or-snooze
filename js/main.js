@@ -1,3 +1,4 @@
+"use strict";
 // So we don't have to keep re-finding things on page, find DOM elements once:
 
 const $body = $("body");
@@ -5,6 +6,8 @@ const $body = $("body");
 const $storiesLoadingMsg = $("#stories-loading-msg");
 const $noFavoritesMsg = $("#no-favorites-msg");
 const $noMyStoriesMsg = $("#no-my-stories-msg");
+const $credentialErrorMsg = $("#credential-errors-msg");
+// const $signupErrorMsg = $("#signup-error-msg");
 
 const $allStoriesList = $("#all-stories-list");
 const $allFavoritesList = $("#favorite-stories-list");
@@ -30,11 +33,13 @@ function hidePageComponents() {
   const components = [
     $allStoriesList,
     $allFavoritesList,
+    $allMyStoriesList,
     $loginForm,
     $signupForm,
     $newStoryForm,
     $noFavoritesMsg,
-    $noMyStoriesMsg
+    $noMyStoriesMsg,
+    $credentialErrorMsg
   ];
   components.forEach(c => c.hide());
 }

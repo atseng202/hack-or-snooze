@@ -1,3 +1,5 @@
+"use strict";
+
 /******************************************************************************
  * Handling navbar clicks and updating navbar
  */

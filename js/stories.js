@@ -1,6 +1,7 @@
+"use strict";
+
 // This is the global list of the stories, an instance of StoryList
 let storyList;
-
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
@@ -109,15 +110,16 @@ function putFavoritesOnPage() {
    let $storyItem = $(evt.target).closest('li');
    let $favoritedStoryIcon = $(evt.target);
    let storyId = $storyItem.attr("id");
-   let story = storyList.stories.find(s => s.storyId === storyId);
-
+   // UPDATE: Refactored to pass in storyId because storyList cannot be source of truth
+   // it lied to us
+   // let story = storyList.stories.find(s => s.storyId === storyId);
    let isFavorite = $favoritedStoryIcon.hasClass('fas');
    // either favorite or un-favorite story, depending on if 
    // it was previously favorited
    if (!isFavorite) {
-     await currentUser.addFavorite(story);
+     await currentUser.addFavorite(storyId);
    } else {
-     await currentUser.removeFavorite(story);
+     await currentUser.removeFavorite(storyId);
    }
    isFavorite = !isFavorite;
    // update the DOM by updating the current story on DOM with 
@@ -168,9 +170,12 @@ function putFavoritesOnPage() {
     const $story = $(evt.target).closest('li')
     const storyId = $story.attr('id');
     
-    await currentUser.removeMyStory(storyId);
+    // Refactored to have storyList handle removal of storyId from server instead
+    // of currentUser
+    // await currentUser.removeMyStory(storyId);
+    await storyList.removeStory(currentUser, storyId);
     // updates the list of stories after removing story instance from server
-    storyList.removeStory(storyId);
+    // storyList.removeStory(storyId);
 
     $story.remove();
    }
